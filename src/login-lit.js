@@ -53,6 +53,14 @@ export class LoginLit extends LitElement {
       h4 {
         color: #ffffff;
       }
+      .app-footer {
+        font-size: calc(12px + 0.5vmin);
+        align-items: center;
+        margin-top:50px;
+      
+      .app-footer a {
+        margin-left: 5px;
+      }
     `;
 
     let togglePassword = document.querySelector("#togglePassword");
@@ -81,6 +89,15 @@ export class LoginLit extends LitElement {
         </div>
         <input type="submit" value="Ingresar" @click="${this._login}" />
       </div>
+      <p class="app-footer">
+        🚽 Made with love by
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/Marttingauna"
+          >martin gauna</a
+        >.
+      </p>
     `;
   }
 

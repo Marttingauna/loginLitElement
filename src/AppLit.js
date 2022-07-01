@@ -1,149 +1,103 @@
-// import { LitElement, html, css } from "lit";
-
-// const logo = new URL("../assets/open-wc-logo.svg", import.meta.url).href;
-
-// export class AppLit extends LitElement {
-//   static get properties() {
-//     return {
-//       title: { type: String },
-//     };
-//   }
-
-//   static get styles() {
-//     return css`
-//       :host {
-//         min-height: 100vh;
-//         display: flex;
-//         flex-direction: column;
-//         align-items: center;
-//         justify-content: flex-start;
-//         font-size: calc(10px + 2vmin);
-//         color: #1a2b42;
-//         max-width: 960px;
-//         margin: 0 auto;
-//         text-align: center;
-//         background-color: var(--app-lit-background-color);
-//       }
-
-//       main {
-//         flex-grow: 1;
-//       }
-
-//       .logo {
-//         margin-top: 36px;
-//         animation: app-logo-spin infinite 20s linear;
-//       }
-
-//       @keyframes app-logo-spin {
-//         from {
-//           transform: rotate(0deg);
-//         }
-//         to {
-//           transform: rotate(360deg);
-//         }
-//       }
-
-//       .app-footer {
-//         font-size: calc(12px + 0.5vmin);
-//         align-items: center;
-//       }
-
-//       .app-footer a {
-//         margin-left: 5px;
-//       }
-//     `;
-//   }
-
-//   constructor() {
-//     super();
-//     this.title = "My app";
-//   }
-
-//   render() {
-//     return html`
-//       <main>
-//         <div class="logo"><img alt="open-wc logo" src=${logo} /></div>
-//         <h1>${this.title}</h1>
-
-//         <p>Edit <code>src/AppLit.js</code> and save to reload.</p>
-//         <a
-//           class="app-link"
-//           href="https://open-wc.org/guides/developing-components/code-examples/"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Code examples
-//         </a>
-//       </main>
-
-//       <p class="app-footer">
-//         🚽 Made with love by
-//         <a
-//           target="_blank"
-//           rel="noopener noreferrer"
-//           href="https://github.com/open-wc"
-//           >open-wc</a
-//         >.
-//       </p>
-//     `;
-//   }
-// }
-
 import { LitElement, html, css } from "lit";
 import "./login-lit";
+import "./components/GetData";
 
 export class AppLit extends LitElement {
   static get properties() {
     return {
       login: { type: Boolean },
+      billboard: { type: Array },
     };
   }
 
   static get styles() {
     return css`
       login-lit {
-        margin-top:50px;
+        padding-top: 10%;
+        min-height: calc(100vh - 10%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: calc(10px + 2vmin);
+        max-width: 960px;
+        margin: 0 auto;
+        text-align: center;
       }
-      :host {
-         min-height: 100vh;
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         justify-content: flex-start;
-         font-size: calc(10px + 2vmin);
-         max-width: 960px;
-         margin: 0 auto;
-         text-align: center;
-         background-color: var(--app-lit-background-color);
-       }
-      .app-footer {
-         font-size: calc(12px + 0.5vmin);
-         align-items: center;
-         margin-top:50px;
-       
-       .app-footer a {
-         margin-left: 5px;
-       }
+      .container {
+        display: block;
+        border-radius: 10px;
+        display: inline-flex;
+        height: max-content;
+        width: 300px;
+        margin: 1rem;
+        position: relative;
+        text-align: center;
+        background-color: #424242;
+        color: #ffffff;
+      }
+      .container img {
+        width: 100%;
+      }
+      get-data {
+        display: none;
+      }
     `;
   }
   constructor() {
     super();
     this.title = "My app";
+    this.addEventListener("apiData", (event) => {
+      this._dataFormat(event.detail.data);
+    });
+  }
+
+  _dataFormat(data) {
+    let movies = [];
+    data["results"].forEach((movie) => {
+      movies.push({
+        id: movie.id,
+        img: "https://image.tmdb.org/t/p/w500" + movie.poster_path,
+        name: movie.original_title,
+        description: movie.overview,
+        release_date: movie.release_date,
+      });
+    });
+    this.billboard = movies;
+    // console.log("Peliculas formateadas: ", movies);
   }
   render() {
     return html`
+      <get-data
+        url="https://api.themoviedb.org/3/movie/popular?api_key=19dedc791dc255982eaf84be8a93012a&language=en-US&page=1"
+        method="GET"
+      ></get-data>
       ${this.login
-        ? html`<h1>Welcome to QwertPy!!</h1>`
+        ? html`
+            <h2>Bienvenido usuario!</h2>
+            ${this.moviesTemplate}
+          `
         : html` <login-lit @signin="${this._hiddenLogin}"></login-lit> `}
-      <p class="app-footer">
-        🚽 Made with love by
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/Marttingauna"
-          >martin gauna</a
-        >.
-      </p>
+    `;
+  }
+
+  get moviesTemplate() {
+    return html`
+      ${this.billboard.map(
+        ({ id, img, name, description, release_date }) =>
+          html`
+            <div class="container">
+              <div class="card">
+                <div class="card-content">
+                  <h2>${name}</h2>
+                  <img src=" ${img}" />
+                  <b> ${release_date} </b>
+                  <p>${description}</p>
+                </div>
+              </div>
+            </div>
+          `
+      )}
     `;
   }
 
