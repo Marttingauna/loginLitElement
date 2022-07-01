@@ -1,0 +1,19 @@
+{
+  "name": "app-lit",
+  "description": "Webcomponent app-lit following open-wc recommendations",
+  "license": "MIT",
+  "author": "app-lit",
+  "version": "0.0.0",
+  "scripts": {
+    "analyze": "cem analyze --litelement",
+    "start": "web-dev-server"
+  },
+  "dependencies": {
+    "lit": "^2.0.2"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.4.17",
+    "@web/dev-server": "^0.1.28"
+  },
+  "customElements": "custom-elements.json"
+}
